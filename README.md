@@ -10,3 +10,46 @@
 ![Prettier](https://img.shields.io/badge/Prettier-v2.8.8-orange.svg)
 
 This is one way to use p5.js with TypeScript and Express.
+
+## Usage
+
+The following will use Express to serve the `public` directory and watch for changes to `src`.
+
+```bash
+npm i
+npm run start
+```
+
+To format all files, run `npm run pretty`.  
+
+See other scripts in [package.json](package.json).
+
+### Singleton
+
+This project uses a singleton design pattern to share the p5 object across files. It can be used like so.
+
+First set up the static object:
+
+```ts
+import { P5Singleton } from "@/utilities/p5-singleton";
+import { Sketch } from "types/sketch"; // optional
+
+const sketch = (p: p5) => {
+  P5Singleton.setInstance(p as Sketch);
+
+  p.setup = setup;
+  p.draw = draw;
+};
+
+new p5(sketch);
+```
+
+Then you can retrieve it with `getInstance` as needed:
+
+```ts
+// setup.ts
+export const setup = () => {
+  const p = P5Singleton.getInstance();
+  p.createCanvas(...computeSize());
+}
+```
